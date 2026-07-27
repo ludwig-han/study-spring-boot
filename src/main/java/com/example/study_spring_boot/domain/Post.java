@@ -20,4 +20,9 @@ public class Post {
     public void setId(long id) { this.id = id; }
     public void setTitle(String title) { this.title = title; }
     public void setContent(String content) { this.content = content; }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
