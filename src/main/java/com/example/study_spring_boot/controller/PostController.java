@@ -1,41 +1,44 @@
 package com.example.study_spring_boot.controller;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Collection;
 
-import org.springframework.web.bind.annotation.*;
-
+import com.example.study_spring_boot.controller.dto.CreatePostRequest;
+import com.example.study_spring_boot.controller.dto.UpdatePostRequest;
 import com.example.study_spring_boot.domain.Post;
+
+import com.example.study_spring_boot.service.PostService;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/posts")
 public class PostController {
-    private final Map<Long, Post> posts = new HashMap<>();
-    private long nextId = 3L;
+    private final PostService postService;
 
-    public PostController() {
-        Post p1 = new Post(1L, "첫 글", "안녕하세요.");
-        Post p2 = new Post(2L, "두 번째 글", "반갑습니다.");
-        posts.put(p1.getId(), p1);
-        posts.put(p2.getId(), p2);
+    public PostController(PostService postService) {
+        this.postService = postService;
     }
 
     @GetMapping
     public Collection<Post> getPosts() {
-        return posts.values();
+        return postService.getPosts();
     }
 
     @GetMapping("/{id}")
     public Post getPost(@PathVariable long id) {
-        return posts.get(id);
+        return postService.getPost(id);
     }
 
     @PostMapping
-    public Post createPost(@RequestBody Post post) {
-        Post newPost = new Post(nextId, post.getTitle(), post.getContent());
-        posts.put(nextId, newPost);
-        nextId++;
-        return newPost;
+    public Post createPost(@RequestBody CreatePostRequest request) {
+        return postService.createPost(request.getTitle(), request.getContent());
     }
 
+    @PutMapping("/{id}")
+    public Post updatePost(@PathVariable long id, @RequestBody UpdatePostRequest request) {
+        return postService.updatePost(id, request.getTitle(), request.getContent());
+    }
+
+    @DeleteMapping("/{id}")
+    public Post deletePost(@PathVariable long id) {
+        return postService.deletePost(id);
+    }
 }
