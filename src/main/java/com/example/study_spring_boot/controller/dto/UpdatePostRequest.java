@@ -1,13 +1,16 @@
 package com.example.study_spring_boot.controller.dto;
 
-public class UpdatePostRequest {
-    private String title;
-    private String content;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-//    public UpdatePostRequest(String title, String content) {
-//        this.title = title;
-//        this.content = content;
-//    }
+public class UpdatePostRequest {
+    @NotBlank
+    @Size(max = 100)
+    private String title;
+
+    @NotBlank
+    @Size(max = 1000)
+    private String content;
 
     public UpdatePostRequest() {}
 

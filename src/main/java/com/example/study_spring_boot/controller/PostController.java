@@ -6,6 +6,8 @@ import com.example.study_spring_boot.controller.dto.UpdatePostRequest;
 import com.example.study_spring_boot.domain.Post;
 
 import com.example.study_spring_boot.service.PostService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,16 +30,18 @@ public class PostController {
     }
 
     @PostMapping
-    public Post createPost(@RequestBody CreatePostRequest request) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Post createPost(@Valid @RequestBody CreatePostRequest request) {
         return postService.createPost(request.getTitle(), request.getContent());
     }
 
     @PutMapping("/{id}")
-    public Post updatePost(@PathVariable long id, @RequestBody UpdatePostRequest request) {
+    public Post updatePost(@PathVariable long id, @Valid @RequestBody UpdatePostRequest request) {
         return postService.updatePost(id, request.getTitle(), request.getContent());
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Post deletePost(@PathVariable long id) {
         return postService.deletePost(id);
     }
