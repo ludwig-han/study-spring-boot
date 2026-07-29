@@ -1,5 +1,6 @@
 package com.example.study_spring_boot.controller;
 
+import com.example.study_spring_boot.exception.PostNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,5 +30,11 @@ public class GlobalExceptionHandler {
                 );
 
         return errors;
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(PostNotFoundException.class)
+    public Map<String, String> handlePostNotFoundException(PostNotFoundException exception) {
+        return Map.of("error", "게시글을 찾을 수 없습니다.");
     }
 }
