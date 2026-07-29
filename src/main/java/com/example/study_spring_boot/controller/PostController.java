@@ -42,7 +42,7 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Post deletePost(@PathVariable long id) {
-        return postService.deletePost(id);
+    public void deletePost(@PathVariable long id) {
+        postService.deletePost(id);
     }
 }

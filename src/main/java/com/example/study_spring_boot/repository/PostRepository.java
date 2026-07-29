@@ -34,13 +34,6 @@ public class PostRepository {
         return post;
     }
 
-    public Post update(long id, String title, String content) {
-        Post post = posts.get(id);
-        if (post != null)
-            post.update(title, content);
-        return post;
-    }
-
     public Post deleteById(long id) {
         return posts.remove(id);
     }
