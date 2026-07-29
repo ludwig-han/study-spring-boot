@@ -1,9 +1,8 @@
 package com.example.study_spring_boot.service;
 
 import com.example.study_spring_boot.domain.Post;
-import com.example.study_spring_boot.exception.PostNotFoundException;
 import com.example.study_spring_boot.repository.PostRepository;
-
+import com.example.study_spring_boot.exception.PostNotFoundException;
 import org.springframework.stereotype.Service;
 
 
