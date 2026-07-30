@@ -3,6 +3,7 @@ package com.example.study_spring_boot.service;
 import com.example.study_spring_boot.domain.Post;
 import com.example.study_spring_boot.repository.PostRepository;
 import com.example.study_spring_boot.exception.PostNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 
@@ -31,6 +32,7 @@ public class PostService {
         return postRepository.save(title, content);
     }
 
+    @Transactional
     public Post updatePost(long id, String title, String content) {
         Post post = postRepository.findById(id);
         if (post == null)
