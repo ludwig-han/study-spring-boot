@@ -7,9 +7,9 @@ import java.util.Collection;
 public interface PostRepository {
     Collection<Post> findAll();
 
-    Post findById(long id);
+    Post findById(Long id);
 
     Post save(String title, String content);
 
-    Post deleteById(long id);
+    Post deleteById(Long id);
 }
