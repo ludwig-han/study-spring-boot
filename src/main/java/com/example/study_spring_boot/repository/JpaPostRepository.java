@@ -1,7 +1,9 @@
 package com.example.study_spring_boot.repository;
 
 import com.example.study_spring_boot.domain.Post;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
 
 import java.util.Collection;
 
@@ -16,6 +18,11 @@ public class JpaPostRepository implements PostRepository {
     @Override
     public Collection<Post> findAll() {
         return springDataPostRepository.findAll();
+    }
+
+    @Override
+    public Page<Post> findAll(Pageable pageable) {
+        return springDataPostRepository.findAll(pageable);
     }
 
     @Override
@@ -37,5 +44,15 @@ public class JpaPostRepository implements PostRepository {
             springDataPostRepository.delete(post);
 
         return post;
+    }
+
+    @Override
+    public Page<Post> searchByKeyword(String keyword, Pageable pageable) {
+        return springDataPostRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
+    }
+
+    @Override
+    public Collection<Post> findAllDesc() {
+        return springDataPostRepository.findAllByOrderByIdDesc();
     }
 }

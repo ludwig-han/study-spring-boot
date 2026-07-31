@@ -4,6 +4,10 @@ import com.example.study_spring_boot.domain.Post;
 import com.example.study_spring_boot.repository.PostRepository;
 import com.example.study_spring_boot.exception.PostNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
@@ -20,6 +24,15 @@ public class PostService {
     public Collection<Post> getPosts () {
         return postRepository.findAll();
     }
+
+    public Page<Post> getPostPage(int page, int size, String direction) {
+        Pageable pageable;
+        if ("desc".equals(direction)) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        } else pageable = PageRequest.of(page, size);
+        return postRepository.findAll(pageable);
+    }
+
 
     public Post getPost(long id) {
         Post post = postRepository.findById(id);
@@ -45,5 +58,13 @@ public class PostService {
         Post post = postRepository.deleteById(id);
         if (post == null)
             throw new PostNotFoundException();
+    }
+
+    public Page<Post> searchPosts(String keyword, int page, int size) {
+        return postRepository.searchByKeyword(keyword, PageRequest.of(page, size));
+    }
+
+    public Collection<Post> findAllDesc() {
+        return postRepository.findAllDesc();
     }
 }
