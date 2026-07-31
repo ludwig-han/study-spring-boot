@@ -7,6 +7,7 @@ import com.example.study_spring_boot.domain.Post;
 
 import com.example.study_spring_boot.service.PostService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,12 @@ public class PostController {
     }
 
     @GetMapping
-    public Collection<Post> getPosts() {
+    public Collection<Post> getPosts(@RequestParam(required = false) String sort) {
+        //if (sort.equals("desc")) {
+        if ("desc".equals(sort)) {
+            return postService.findAllDesc();
+        }
+
         return postService.getPosts();
     }
 
@@ -44,5 +50,21 @@ public class PostController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePost(@PathVariable long id) {
         postService.deletePost(id);
+    }
+
+    @GetMapping("/search")
+    public Page<Post> searchPosts(
+            @RequestParam String keyword,
+            @RequestParam(required = false) int page,
+            @RequestParam(required = false) int size
+    ) {
+        return postService.searchPosts(keyword, page, size);
+    }
+
+    @GetMapping("/page")
+    public Page<Post> getPostPage(
+            @RequestParam int page, @RequestParam int size, @RequestParam(required = false) String direction
+    ) {
+        return postService.getPostPage(page, size, direction);
     }
 }
