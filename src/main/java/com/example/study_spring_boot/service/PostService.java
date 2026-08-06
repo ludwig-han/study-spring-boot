@@ -1,5 +1,6 @@
 package com.example.study_spring_boot.service;
 
+import com.example.study_spring_boot.controller.dto.PostResponse;
 import com.example.study_spring_boot.domain.Post;
 import com.example.study_spring_boot.repository.PostRepository;
 import com.example.study_spring_boot.exception.PostNotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
@@ -21,37 +23,44 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public Collection<Post> getPosts () {
-        return postRepository.findAll();
+    public Collection<PostResponse> getPosts () {
+        Collection<Post> posts = postRepository.findAll();
+        Collection<PostResponse> responses = new ArrayList<>();
+        for (Post post : posts) {
+            responses.add(new PostResponse(post));
+        }
+        return responses;
     }
 
-    public Page<Post> getPostPage(int page, int size, String direction) {
+    public Page<PostResponse> getPostPage(int page, int size, String direction) {
         Pageable pageable;
         if ("desc".equals(direction)) {
             pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         } else pageable = PageRequest.of(page, size);
-        return postRepository.findAll(pageable);
+
+        Page<Post> posts = postRepository.findAll(pageable);
+        return posts.map(post -> new PostResponse(post));
     }
 
 
-    public Post getPost(long id) {
+    public PostResponse getPost(long id) {
         Post post = postRepository.findById(id);
         if (post == null)
             throw new PostNotFoundException();
-        return post;
+        return new PostResponse(post);
     }
 
-    public Post createPost(String title, String content){
-        return postRepository.save(title, content);
+    public PostResponse createPost(String title, String content){
+        return new PostResponse(postRepository.save(title, content));
     }
 
     @Transactional
-    public Post updatePost(long id, String title, String content) {
+    public PostResponse updatePost(long id, String title, String content) {
         Post post = postRepository.findById(id);
         if (post == null)
             throw new PostNotFoundException();
         post.update(title, content);
-        return post;
+        return new PostResponse(post);
     }
 
     public void deletePost(long id) {
@@ -60,11 +69,21 @@ public class PostService {
             throw new PostNotFoundException();
     }
 
-    public Page<Post> searchPosts(String keyword, int page, int size) {
-        return postRepository.searchByKeyword(keyword, PageRequest.of(page, size));
+    public Page<PostResponse> searchPosts(String keyword, int page, int size, String direction) {
+        Pageable pageable;
+        if ("desc".equals(direction)) {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        } else pageable = PageRequest.of(page, size);
+        Page<Post> posts = postRepository.searchByKeyword(keyword, pageable);
+        return posts.map(post -> new PostResponse(post));
     }
 
-    public Collection<Post> findAllDesc() {
-        return postRepository.findAllDesc();
+    public Collection<PostResponse> findAllDesc() {
+        Collection<Post> posts = postRepository.findAllDesc();
+        Collection<PostResponse> responses = new ArrayList<>();
+        for (Post post : posts) {
+            responses.add(new PostResponse(post));
+        }
+        return responses;
     }
 }

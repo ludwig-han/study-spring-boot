@@ -2,8 +2,10 @@ package com.example.study_spring_boot.controller;
 import java.util.Collection;
 
 import com.example.study_spring_boot.controller.dto.CreatePostRequest;
+import com.example.study_spring_boot.controller.dto.PostResponse;
 import com.example.study_spring_boot.controller.dto.UpdatePostRequest;
-import com.example.study_spring_boot.domain.Post;
+//import com.example.study_spring_boot.domain.Post; => Controller는 이제 Post 객체를 몰라도 된다.
+// 즉, DB Entity를 몰라도 API 처리가 가능하다.
 
 import com.example.study_spring_boot.service.PostService;
 import jakarta.validation.Valid;
@@ -21,9 +23,9 @@ public class PostController {
     }
 
     @GetMapping
-    public Collection<Post> getPosts(@RequestParam(required = false) String sort) {
+    public Collection<PostResponse> getPosts(@RequestParam(required = false) String direction) {
         //if (sort.equals("desc")) {
-        if ("desc".equals(sort)) {
+        if ("desc".equals(direction)) {
             return postService.findAllDesc();
         }
 
@@ -31,18 +33,18 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public Post getPost(@PathVariable long id) {
+    public PostResponse getPost(@PathVariable long id) {
         return postService.getPost(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Post createPost(@Valid @RequestBody CreatePostRequest request) {
+    public PostResponse createPost(@Valid @RequestBody CreatePostRequest request) {
         return postService.createPost(request.getTitle(), request.getContent());
     }
 
     @PutMapping("/{id}")
-    public Post updatePost(@PathVariable long id, @Valid @RequestBody UpdatePostRequest request) {
+    public PostResponse updatePost(@PathVariable long id, @Valid @RequestBody UpdatePostRequest request) {
         return postService.updatePost(id, request.getTitle(), request.getContent());
     }
 
@@ -53,16 +55,17 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public Page<Post> searchPosts(
+    public Page<PostResponse> searchPosts(
             @RequestParam String keyword,
-            @RequestParam(required = false) int page,
-            @RequestParam(required = false) int size
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String direction
     ) {
-        return postService.searchPosts(keyword, page, size);
+        return postService.searchPosts(keyword, page, size, direction);
     }
 
     @GetMapping("/page")
-    public Page<Post> getPostPage(
+    public Page<PostResponse> getPostPage(
             @RequestParam int page, @RequestParam int size, @RequestParam(required = false) String direction
     ) {
         return postService.getPostPage(page, size, direction);
