@@ -1,19 +1,17 @@
 package com.example.study_spring_boot.controller.dto;
 
-import com.example.study_spring_boot.domain.Post;
-
 public class PostResponse {
-    private Long id;
+    private long id;
     private String title;
     private String content;
 
-    public PostResponse(Post post) {
-        this.id = post.getId();
-        this.title = post.getTitle();
-        this.content = post.getContent();
+    public PostResponse(long id, String title, String content) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -24,6 +22,4 @@ public class PostResponse {
     public String getContent() {
         return content;
     }
-
-
 }
