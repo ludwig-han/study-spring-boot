@@ -1,0 +1,26 @@
+### 전체 조회
+GET http://localhost:8080/posts
+
+### 단건 조회
+GET http://localhost:8080/posts/2
+
+### 생성
+POST http://localhost:8080/posts
+Content-Type: application/json
+
+{
+  "title": "테스트 제목",
+  "content": "테스트 내용"
+}
+
+### 수정
+PUT http://localhost:8080/posts/2
+Content-Type: application/json
+
+{
+  "title": "수정 제목",
+  "content": "수정 내용"
+}
+
+### 삭제
+DELETE http://localhost:8080/posts/2

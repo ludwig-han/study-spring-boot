@@ -1,7 +1,7 @@
 package com.example.study_spring_boot;
 
 import com.example.study_spring_boot.domain.Post;
-import com.example.study_spring_boot.repository.SpringDataPostRepository;
+import com.example.study_spring_boot.repository.PostRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +15,7 @@ public class StudySpringBootApplication {
 	}
 
 	@Bean
-	CommandLineRunner initData(SpringDataPostRepository repository) {
+	CommandLineRunner initData(PostRepository repository) {
 		return args -> {
 			if (repository.count() == 0) {
 				repository.save(new Post("두 번째 글 hht", "내용 2 hht"));
