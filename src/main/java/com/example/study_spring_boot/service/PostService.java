@@ -4,6 +4,11 @@ import com.example.study_spring_boot.controller.dto.PostResponse;
 import com.example.study_spring_boot.domain.Post;
 import com.example.study_spring_boot.repository.PostRepository;
 import jakarta.transaction.Transactional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,6 +31,32 @@ public class PostService {
             postResponses.add(new PostResponse(post.getId(), post.getTitle(), post.getContent()));
         }
 
+        return postResponses;
+    }
+
+    public List<PostResponse> getPostsPage(int page, int size, String sort) {
+        Sort sortOption = null;
+        if ("oldest".equals(sort))
+            sortOption = Sort.by(Sort.Direction.ASC, "id");
+        else sortOption = Sort.by(Sort.Direction.DESC, "id");
+
+        Pageable pageable = PageRequest.of(page, size, sortOption);
+        Page<Post> posts = postRepository.findAll(pageable);
+        List<Post> postList = posts.getContent();
+        List<PostResponse> postResponses = new ArrayList<>();
+        for (Post post : postList) {
+            postResponses.add(new PostResponse(post.getId(), post.getTitle(), post.getContent()));
+        }
+
+        return postResponses;
+    }
+
+    public List<PostResponse> searchPosts(String keyword) {
+        List<Post> posts = postRepository.findByTitleContaining(keyword);
+        List<PostResponse> postResponses = new ArrayList<>();
+        for (Post post : posts) {
+            postResponses.add(new PostResponse(post.getId(), post.getTitle(), post.getContent()));
+        }
         return postResponses;
     }
 

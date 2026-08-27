@@ -20,7 +20,14 @@ public class PostController {
     }
 
     @GetMapping
-    public List<PostResponse> getPosts() {
+    public List<PostResponse> getPosts(@RequestParam(required = false) String keyword,
+                                       @RequestParam(required = false) Integer size,
+                                       @RequestParam(required = false) Integer page,
+                                       @RequestParam(required = false) String sort) {
+        if (keyword != null)
+            return postService.searchPosts(keyword);
+        if (size != null && page != null)
+            return postService.getPostsPage(page, size, sort);
         return postService.getPosts();
     }
 
