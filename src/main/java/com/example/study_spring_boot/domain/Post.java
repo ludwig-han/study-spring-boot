@@ -1,9 +1,7 @@
 package com.example.study_spring_boot.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
 
 @Entity
 public class Post {
@@ -13,7 +11,12 @@ public class Post {
     private String title;
     private String content;
 
-    public Post(String title, String content) {
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Post(User user, String title, String content) {
+        this.user = user;
         this.title = title;
         this.content = content;
     }
@@ -30,6 +33,10 @@ public class Post {
 
     public String getContent() {
         return content;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public void setId(Long id) {
