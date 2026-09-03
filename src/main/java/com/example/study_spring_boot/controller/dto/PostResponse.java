@@ -4,11 +4,13 @@ public class PostResponse {
     private long id;
     private String title;
     private String content;
+    private long userId;
 
-    public PostResponse(long id, String title, String content) {
+    public PostResponse(long userId, long id, String title, String content) {
         this.id = id;
         this.title = title;
         this.content = content;
+        this.userId = userId;
     }
 
     public long getId() {
@@ -21,5 +23,9 @@ public class PostResponse {
 
     public String getContent() {
         return content;
+    }
+
+    public long getUserId() {
+        return userId;
     }
 }

@@ -17,11 +17,11 @@ public class StudySpringBootApplication {
 	@Bean
 	CommandLineRunner initData(PostRepository repository) {
 		return args -> {
-			if (repository.count() == 0) {
-				repository.save(new Post("두 번째 글 hht", "내용 2 hht"));
-				repository.save(new Post("첫 번째 글 hht", "내용 1 jjt"));
-				repository.save(new Post("세 번째 글", "내용 3"));
-			}
+//			if (repository.count() == 0) {
+//				repository.save(new Post("두 번째 글 hht", "내용 2 hht"));
+//				repository.save(new Post("첫 번째 글 hht", "내용 1 jjt"));
+//				repository.save(new Post("세 번째 글", "내용 3"));
+//			}
 		};
 	}
 

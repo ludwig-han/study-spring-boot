@@ -1,7 +1,10 @@
 package com.example.study_spring_boot.service;
 
+import com.example.study_spring_boot.controller.dto.PostResponse;
 import com.example.study_spring_boot.controller.dto.UserResponse;
+import com.example.study_spring_boot.domain.Post;
 import com.example.study_spring_boot.domain.User;
+import com.example.study_spring_boot.repository.PostRepository;
 import com.example.study_spring_boot.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
@@ -15,12 +18,14 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PostRepository postRepository) {
         this.userRepository = userRepository;
+        this.postRepository = postRepository;
     }
 
-    // READ
+    // GET
     public List<UserResponse> getUsers() {
         List<User> users = userRepository.findAll();
         List<UserResponse> userResponses = new ArrayList<>();
@@ -28,6 +33,20 @@ public class UserService {
             userResponses.add(new UserResponse(user.getId(), user.getName(), user.getEmail()));
         }
         return userResponses;
+    }
+
+    public List<PostResponse> getPostsByUserId(long userId) {
+        //User user = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (!userRepository.existsById(userId))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        List<Post> posts = postRepository.findByUserId(userId);
+        List<PostResponse> postResponses = new ArrayList<>();
+        for (Post post : posts) {
+            postResponses.add(new PostResponse(post.getUser().getId(), post.getId(), post.getTitle(), post.getContent()));
+        }
+
+        return postResponses;
     }
 
     public UserResponse getUser(long id) {

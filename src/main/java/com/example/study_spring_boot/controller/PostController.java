@@ -19,6 +19,7 @@ public class PostController {
         this.postService = postService;
     }
 
+    // GET
     @GetMapping
     public List<PostResponse> getPosts(@RequestParam(required = false) String keyword,
                                        @RequestParam(required = false) Integer size,
@@ -36,17 +37,20 @@ public class PostController {
         return postService.getPost(id);
     }
 
+    // POST
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PostResponse createPost(@Valid @RequestBody CreatePostRequest request) {      // 변수 or dto 어케받더라;
-        return postService.createPost(request.getTitle(), request.getContent());
+    public PostResponse createPost(@Valid @RequestBody CreatePostRequest request) {
+        return postService.createPost(request.getUserId(), request.getTitle(), request.getContent());
     }
 
+    // PUT
     @PutMapping("/{id}")
     public void updatePost(@PathVariable long id, @Valid @RequestBody UpdatePostRequest request) {
         postService.updatePost(id, request.getTitle(), request.getContent());
     }
 
+    // DELETE
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePost(@PathVariable long id) {

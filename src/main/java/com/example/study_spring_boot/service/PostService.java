@@ -2,7 +2,9 @@ package com.example.study_spring_boot.service;
 
 import com.example.study_spring_boot.controller.dto.PostResponse;
 import com.example.study_spring_boot.domain.Post;
+import com.example.study_spring_boot.domain.User;
 import com.example.study_spring_boot.repository.PostRepository;
+import com.example.study_spring_boot.repository.UserRepository;
 import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -20,16 +22,19 @@ import java.util.List;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
+    // GET
     public List<PostResponse> getPosts() {
         List<Post> posts = postRepository.findAll();
         List<PostResponse> postResponses = new ArrayList<>();
         for (Post post : posts) {
-            postResponses.add(new PostResponse(post.getId(), post.getTitle(), post.getContent()));
+            postResponses.add(new PostResponse(post.getUser().getId(), post.getId(), post.getTitle(), post.getContent()));
         }
 
         return postResponses;
@@ -46,7 +51,7 @@ public class PostService {
         List<Post> postList = posts.getContent();
         List<PostResponse> postResponses = new ArrayList<>();
         for (Post post : postList) {
-            postResponses.add(new PostResponse(post.getId(), post.getTitle(), post.getContent()));
+            postResponses.add(new PostResponse(post.getUser().getId(), post.getId(), post.getTitle(), post.getContent()));
         }
 
         return postResponses;
@@ -56,22 +61,25 @@ public class PostService {
         List<Post> posts = postRepository.findByTitleContaining(keyword);
         List<PostResponse> postResponses = new ArrayList<>();
         for (Post post : posts) {
-            postResponses.add(new PostResponse(post.getId(), post.getTitle(), post.getContent()));
+            postResponses.add(new PostResponse(post.getUser().getId(), post.getId(), post.getTitle(), post.getContent()));
         }
         return postResponses;
     }
 
     public PostResponse getPost(long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return new PostResponse(post.getId(), post.getTitle(), post.getContent());
+        return new PostResponse(post.getUser().getId(), post.getId(), post.getTitle(), post.getContent());
     }
 
-    public PostResponse createPost(String title, String content) {
-        Post post = new Post(title, content);
+    // CREATE
+    public PostResponse createPost(long userId, String title, String content) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Post post = new Post(user, title, content);
         postRepository.save(post);
-        return new PostResponse(post.getId(), post.getTitle(), post.getContent());
+        return new PostResponse(post.getUser().getId(), post.getId(), post.getTitle(), post.getContent());
     }
 
+    // UPDATE
     @Transactional
     public void updatePost(long id, String title, String content) {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -79,6 +87,7 @@ public class PostService {
         post.setContent(content);
     }
 
+    // DELETE
     public void deletePost(long id) {
         if (postRepository.findById(id).isPresent())
             postRepository.deleteById(id);
