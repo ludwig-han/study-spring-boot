@@ -1,11 +1,11 @@
 package com.example.study_spring_boot.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User {
@@ -19,6 +19,9 @@ public class User {
     @NotBlank
     @Email
     private String email;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Post> posts = new ArrayList<>();
 
     protected User() { }
 
@@ -37,6 +40,10 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
     }
 
     public void setName(String name) {

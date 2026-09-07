@@ -25,7 +25,7 @@ public class UserService {
         this.postRepository = postRepository;
     }
 
-    // GET
+    // READ
     public List<UserResponse> getUsers() {
         List<User> users = userRepository.findAll();
         List<UserResponse> userResponses = new ArrayList<>();
@@ -36,11 +36,12 @@ public class UserService {
     }
 
     public List<PostResponse> getPostsByUserId(long userId) {
-        //User user = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        if (!userRepository.existsById(userId))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//        if (!userRepository.existsById(userId))
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        //List<Post> posts = postRepository.findByUserId(userId);
+        List<Post> posts = user.getPosts();
 
-        List<Post> posts = postRepository.findByUserId(userId);
         List<PostResponse> postResponses = new ArrayList<>();
         for (Post post : posts) {
             postResponses.add(new PostResponse(post.getUser().getId(), post.getId(), post.getTitle(), post.getContent()));
