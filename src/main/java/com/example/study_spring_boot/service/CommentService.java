@@ -28,6 +28,15 @@ public class CommentService {
     }
 
     // READ
+    public List<CommentResponse> getComments() {
+        List<Comment> comments = commentRepository.findAll();
+        List<CommentResponse> commentResponses = new ArrayList<>();
+        for (Comment comment: comments) {
+            commentResponses.add(CommentResponse.from(comment));
+        }
+        return commentResponses;
+    }
+
     public CommentResponse getComment(long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return CommentResponse.from(comment);

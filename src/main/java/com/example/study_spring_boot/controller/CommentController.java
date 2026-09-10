@@ -19,6 +19,11 @@ public class CommentController {
     }
 
     // GET
+    @GetMapping()
+    public List<CommentResponse> getComments() {
+        return commentService.getComments();
+    }
+
     @GetMapping("/{id}")
     public CommentResponse getComment(@PathVariable long id) {
         return commentService.getComment(id);
@@ -30,8 +35,8 @@ public class CommentController {
     }
 
     @GetMapping("/post/{id}")
-    public List<CommentResponse> getCommentsPostId(@PathVariable long postId) {
-        return commentService.getCommentsByPostId(postId);
+    public List<CommentResponse> getCommentsPostId(@PathVariable long id) {
+        return commentService.getCommentsByPostId(id);
     }
 
     // POST
