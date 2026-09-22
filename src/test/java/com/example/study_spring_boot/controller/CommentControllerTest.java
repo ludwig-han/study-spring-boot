@@ -7,14 +7,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,5 +61,88 @@ class CommentControllerTest {
                 get("/comments/999")
         )
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void createComment_success() throws Exception {
+        String json = """
+                {
+                "userId": 2,
+                "postId": 11,
+                "content": "new comment"
+                }
+                """;
+
+        mockMvc.perform(
+                post("/comments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        )
+                .andExpect(status().isCreated());
+
+        verify(commentService).createComment(2L, 11L, "new comment");
+    }
+
+    @Test
+    void updateComment_success() throws Exception {
+        String json = """
+                {
+                "content": "updated comment"
+                }
+                """;
+
+        mockMvc.perform(
+                put("/comments/11")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        )
+                .andExpect(status().isOk());
+
+        verify(commentService).updateComment(11L, "updated comment");
+    }
+
+    @Test
+    void updateComment_notFound() throws Exception {
+        doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND))
+                .when(commentService).updateComment(999L, "updated comment");
+
+        String json = """
+                {
+                "content": "updated comment"
+                }
+                """;
+
+        mockMvc.perform(
+                put("/comments/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        )
+                .andExpect(status().isNotFound());
+        verify(commentService).updateComment(999L, "updated comment");
+    }
+
+    @Test
+    void deleteComment_success() throws Exception {
+        mockMvc.perform(
+                delete("/comments/2")
+        )
+                .andExpect(status().isNoContent());
+
+        verify(commentService).deleteComment(2L);
+    }
+
+    @Test
+    void deleteComment_notFound() throws Exception {
+//        when(commentService.deleteComment(999L))
+//                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND))
+                .when(commentService).deleteComment(999L);
+
+        mockMvc.perform(
+                delete("/comments/999")
+        )
+                .andExpect(status().isNotFound());
+
+        verify(commentService).deleteComment(999L);
     }
 }
