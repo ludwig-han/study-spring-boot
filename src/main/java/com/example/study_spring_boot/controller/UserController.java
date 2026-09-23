@@ -39,7 +39,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void createUser(@RequestBody CreateUserRequest userRequest) {
-        userService.createUser(userRequest.getName(), userRequest.getEmail());
+        userService.createUser(userRequest.getName(), userRequest.getEmail(), userRequest.getPassword());
     }
 
     // PUT

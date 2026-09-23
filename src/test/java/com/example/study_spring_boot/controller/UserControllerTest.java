@@ -137,7 +137,7 @@ class UserControllerTest {
         )
                 .andExpect(status().isCreated());
 
-        verify(userService).createUser("new name", "new@email");
+        verify(userService).createUser("new name", "new@email", "encoded password");
     }
 
     @Test

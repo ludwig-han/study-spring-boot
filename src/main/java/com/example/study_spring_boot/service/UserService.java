@@ -9,6 +9,7 @@ import com.example.study_spring_boot.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,10 +20,12 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PostRepository postRepository) {
+    public UserService(UserRepository userRepository, PostRepository postRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // READ
@@ -56,8 +59,10 @@ public class UserService {
     }
 
     // CREATE
-    public void createUser(String name, String email) {
-        User user = new User(name, email);
+    public void createUser(String name, String email, String password) {
+        String encodedPassword = passwordEncoder.encode(password);
+
+        User user = new User(name, email, encodedPassword);
         userRepository.save(user);
     }
 
